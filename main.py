@@ -1,20 +1,23 @@
 import sys
-import argparse
+import json
 
-def get_execution_args():
-    filename = sys.argv[1]
-    print(filename)
+def read_json_file(filepath:str):
+    return json.loads(open(filepath).read())
 
-def get_file():
-    return open(sys.argv[1])
-
-def read_input(sys):
-    return sys.stdin
+def handle_json(file_list:list):
+    for filename in file_list:
+        prompt = f'Is this the file you wanted: {filename}? [y/n] '
+        res = input(prompt)
+        while res not in [ 'y', 'n' ]:
+            res = input(f'Please enter y or n. {prompt}')
+        msg = 'we\'ll handle that' if 'y' == res else 'we\'ll skip this one'
+        print(f'Thanks, {msg}')
 
 def main():
     try:
-        print(get_file().read())
-    except Exception:
+        json_file = read_json_file(sys.argv[1])
+        handle_json(json_file['files'])
+    except OSError:
         print('Could not open file')
 
 if __name__ == '__main__':
